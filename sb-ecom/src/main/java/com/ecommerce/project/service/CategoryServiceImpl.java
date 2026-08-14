@@ -19,7 +19,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public void createCategory(Category category) {
-        category.setCategoryId(nextId++);
+        category.setCategoryId(nextId++); // Managing ID manually
         categories.add(category);
     }
 }
