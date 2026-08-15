@@ -28,36 +28,25 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public String deleteCategory(Long categoryId) {
-        List<Category> categories = categoryRepository.findAll();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
-        Category category = categories.stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found.")); //handling status code
-
-        if (category == null) {
-            return "Category not found";
-        }
         categoryRepository.delete(category);
         return "Category with categoryId: " + categoryId + " deleted successfully!";
     }
 
     @Override
     public Category updateCategory(Category category, Long categoryId) {
-        List<Category> categories = categoryRepository.findAll();
+        // getting category
+        Optional<Category> savedCategoryOptional = categoryRepository.findById(categoryId);
 
-        Optional<Category> categoryOptional = categories.stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst();
-
-        if (categoryOptional.isPresent()) {
-            Category existingCategory = categoryOptional.get();
-            existingCategory.setCategoryName(category.getCategoryName());
-            Category updatedCategory = categoryRepository.save(existingCategory);
-            return updatedCategory;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found.");
-        }
+        // checking existing or not in database, if not throw exception
+        Category savedCategory = savedCategoryOptional
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found."));
+        // update
+        category.setCategoryId(categoryId);
+        savedCategory = categoryRepository.save(category);
+        return savedCategory;
     }
 
 
