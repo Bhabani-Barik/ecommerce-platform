@@ -57,6 +57,7 @@ public class WebSecurityConfig {
         return authenticationProvider;
     }
 
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) {
         return authConfig.getAuthenticationManager();
     }
@@ -75,7 +76,7 @@ public class WebSecurityConfig {
      requires this sort of authentication and all.
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception ->
                         exception.authenticationEntryPoint(unauthorizedHandler))
@@ -120,7 +121,7 @@ public class WebSecurityConfig {
                 "/swagger-resources/**",
                 "/configuration/security",
                 "/swagger-ui.html",
-                "webjars/**"));
+                "/webjars/**"));
     }
 
 
